@@ -4,3 +4,12 @@
 [submodule "bridges/hkmiio/hkmiio"]
 	path = bridges/hkmiio/hkmiio
 	url = https://github.com/nickw444/hkmiio.git
+[submodule "esp-fw/components/esp-wolfssl"]
+	path = esp-fw/components/esp-wolfssl
+	url = https://github.com/maximkulkin/esp-wolfssl
+[submodule "esp-fw/components/esp-homekit"]
+	path = esp-fw/components/esp-homekit
+	url = https://github.com/maximkulkin/esp-homekit
+[submodule "esp-fw/components/esp-cjson"]
+	path = esp-fw/components/esp-cjson
+	url = https://github.com/maximkulkin/esp-cjson
