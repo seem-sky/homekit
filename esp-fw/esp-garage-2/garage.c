@@ -37,6 +37,7 @@ static void wifi_init() {
 }
 
 homekit_characteristic_t current_door_state;
+homekit_characteristic_t target_door_state;
 
 void identify_task(void *_args) {
     for (int i=0; i<6; i++) {
@@ -94,6 +95,7 @@ void sense_intr_task(void *pvParameters) {
         if(last < button_ts-200) {
             current_door_state_t door_state = get_door_state();
             homekit_characteristic_notify(&current_door_state, HOMEKIT_UINT8(door_state));
+            homekit_characteristic_notify(&target_door_state, HOMEKIT_UINT8(door_state));
             last = button_ts;
         }
     }
