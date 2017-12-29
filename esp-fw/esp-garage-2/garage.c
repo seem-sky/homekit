@@ -16,6 +16,15 @@
 #define TRIGGER_GPIO 2
 #define SENSE_GPIO 3
 
+typedef enum _current_door_state current_door_state_t;
+enum _current_door_state {
+    CURRENT_DOOR_STATE_OPEN = 0,
+    CURRENT_DOOR_STATE_CLOSED = 1,
+    CURRENT_DOOR_STATE_OPENING = 2,
+    CURRENT_DOOR_STATE_CLOSING = 3,
+    CURRENT_DOOR_STATE_STOPPED = 4
+};
+
 static void wifi_init() {
     struct sdk_station_config wifi_config = {
         .ssid = WIFI_SSID,
@@ -26,6 +35,8 @@ static void wifi_init() {
     sdk_wifi_station_set_config(&wifi_config);
     sdk_wifi_station_connect();
 }
+
+homekit_characteristic_t current_door_state;
 
 void identify_task(void *_args) {
     for (int i=0; i<6; i++) {
@@ -59,7 +70,7 @@ static QueueHandle_t tsqueue;
 current_door_state_t get_door_state() {
     // A high value means the door is open.
     uint8_t sense_val = gpio_read(SENSE_GPIO);
-    if sense_val == LOW {
+    if (sense_val == 0) {
         return CURRENT_DOOR_STATE_CLOSED;
     } else {
         return CURRENT_DOOR_STATE_OPEN;
@@ -81,7 +92,7 @@ void sense_intr_task(void *pvParameters) {
         xQueueReceive(*tsqueue, &button_ts, portMAX_DELAY);
         button_ts *= portTICK_PERIOD_MS;
         if(last < button_ts-200) {
-            current_door_state_t door_state = get_door_state()
+            current_door_state_t door_state = get_door_state();
             homekit_characteristic_notify(&current_door_state, HOMEKIT_UINT8(door_state));
             last = button_ts;
         }
@@ -94,24 +105,27 @@ void sense_init() {
     xTaskCreate(sense_intr_task, "senseTask", 256, &tsqueue, 2, NULL);
 }
 
-enum current_door_state_t {
-    CURRENT_DOOR_STATE_OPEN = 0
-    CURRENT_DOOR_STATE_CLOSED = 1
-    CURRENT_DOOR_STATE_OPENING = 2
-    CURRENT_DOOR_STATE_CLOSING = 3
-    CURRENT_DOOR_STATE_STOPPED = 4
-}
+
 
 homekit_value_t get_current_door_state() {
-    uint8_t sense_val = gpio_read(SENSE_GPIO);
-    return HOMEKIT_UINT8(0);
+    return HOMEKIT_UINT8(get_door_state());
 }
-
-uint8_t CURRENT_DOOR_STATE = 0;
 
 
 void set_target_door_state(homekit_value_t value) {
+    current_door_state_t current_state = get_door_state();
+
     printf("Setting target door state to %d\n", value.int_value);
+    printf("Current state is %d\n", current_state);
+
+    if (current_state == CURRENT_DOOR_STATE_OPEN) {
+        homekit_characteristic_notify(&current_door_state,
+            HOMEKIT_UINT8(CURRENT_DOOR_STATE_CLOSING));
+    } else {
+        homekit_characteristic_notify(&current_door_state,
+            HOMEKIT_UINT8(CURRENT_DOOR_STATE_OPENING));
+    }
+
     xTaskCreate(trigger_task, "trigger", 128, NULL, 2, NULL);
 }
 
