@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>ESP Blindkit</title>
+    <style>
+    body { font-family: sans-serif;line-height: 1.7; }
+    h2 { margin-top: 0; margin-bottom: 5px;}
+    label { }
+    form { margin-bottom: 0;}
+    button { margin: 5px 0;}
+    .formGroup { padding: 10px; border:1px solid #ccc; margin-bottom: 20px;}
+    </style>
+  </head>
+  <body>
+    <div class="formGroup">
+      <h2>Existing Blinds</h2>
+      <form action="delete-blind.cgi" method="GET">
+        <ul>
+          <li>Kitchen Blind <button value="1" name="id" type="submit">Delete</button></li>
+        </ul>
+      </form>
+    </div>
+
+    <div class="formGroup">
+      <h2>New Blind</h2>
+      <form action="new-blind.cgi" method="GET">
+        <div><label>Name <input name="name" type="text" /></label></div>
+        <div><label>Channel <input name="channel" type="text" /></label></div>
+        <div><label>Remote <input name="remote" type="text" /></label></div>
+        <div><input type="submit" value="Create Blind" /></div>
+      </form>
+    </div>
+    <div class="formGroup">
+      <div><strong>Uptime</strong>: <!--#uptime--></div>
+      <div><strong>Free Heap</strong>: <!--#heap--></div>
+      <form action="actions.cgi" method="GET">
+        <button value="reboot" name="action" type="submit">Reboot</button>
+      </form>
+    </div>
+
+  </body>
+</html>

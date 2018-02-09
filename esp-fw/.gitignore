@@ -5,3 +5,6 @@
 
 *pws.txt
 *.DS_Store
+
+wifi.h
+*.gch
