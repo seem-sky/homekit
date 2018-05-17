@@ -74,3 +74,4 @@ camera: !include_dir_merge_list config/cameras/
 influxdb:
 google_assistant: !include google_assistant.yaml
 ffmpeg:
+apple_tv: !include apple_tv.yaml
