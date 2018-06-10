@@ -42,6 +42,7 @@ energy:
     - sensor.efergy_784242
     - sensor.efergy_786148
     - sensor.energy_consumed
+    - history_graph.power
 
 bom_weather:
   name: Weather
