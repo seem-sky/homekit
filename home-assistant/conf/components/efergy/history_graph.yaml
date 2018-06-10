@@ -1,0 +1,9 @@
+power:
+  name: Power
+  hours_to_show: 12
+  refresh: 60
+  entities:
+    - sensor.mains_input
+    - sensor.efergy_786148
+    - sensor.efergy_731181
+    - sensor.efergy_784242
